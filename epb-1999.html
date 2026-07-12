@@ -197,14 +197,14 @@
 
   .copy-all{
     display:flex;align-items:center;justify-content:center;gap:7px;
-    width:100%;margin:2px 0 14px;
-    background:rgba(76,140,130,.18);color:var(--mint-ink);border:1px solid rgba(76,140,130,.35);
+    width:100%;margin:16px 0 2px;
+    background:transparent;color:var(--mint-ink);border:1.5px solid rgba(76,140,130,.45);
     border-radius:var(--r-md);padding:11px 0;font-size:14px;font-weight:700;
     cursor:pointer;font-family:inherit;
-    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   }
-  .copy-all:active{background:rgba(76,140,130,.28)}
-  .copy-all.copied{background:rgba(76,133,98,.2);border-color:rgba(76,133,98,.4);color:var(--ok)}
+  .copy-all:active{background:rgba(76,140,130,.14)}
+  .copy-all.copied{background:rgba(76,133,98,.16);border-color:rgba(76,133,98,.5);color:var(--ok)}
+  .copy-divider{border-top:1px solid rgba(255,255,255,.6);margin-top:14px}
 
   .field-grid{
     display:grid;grid-template-columns:1fr 1fr;
@@ -216,8 +216,8 @@
   .field-v{font-size:14px;color:var(--ink);margin-top:3px;overflow-wrap:anywhere;line-height:1.5}
 
   .quote-block{
-    margin:12px 0 4px;padding:13px 14px;background:rgba(76,140,130,.16);
-    border-radius:var(--r-md);border-left:3px solid var(--mint);
+    margin:12px 0 4px;padding:13px 14px 13px 16px;border-radius:var(--r-md);
+    background:linear-gradient(to right, var(--mint) 0 3px, rgba(76,140,130,.15) 3px 100%);
     font-size:14.5px;line-height:1.75;color:#233E3A;overflow-wrap:anywhere;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
   }
@@ -229,8 +229,12 @@
   }
   .memo-block .field-k{color:var(--ink-faint);margin-bottom:4px;display:block}
 
-  .addr-block{margin:12px 0 4px;padding:13px 14px;background:rgba(255,255,255,.4);border-radius:var(--r-md)}
-  .addr-block .field-k{margin-bottom:3px}
+  .addr-block{
+    margin:12px 0 4px;padding:13px 14px 13px 16px;border-radius:var(--r-md);
+    background:linear-gradient(to right, var(--harbor) 0 3px, rgba(58,107,120,.14) 3px 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .addr-block .field-k{margin-bottom:3px;color:var(--harbor-deep)}
   .addr-block .field-v{font-weight:600;margin-bottom:10px}
   .nav-btns{display:flex;gap:8px}
   .nav-btns a{
@@ -312,7 +316,7 @@
 <footer>
   資料來源：高雄市政府「Open1999 派工受理案件」開放資料。
   若需完整介面仍可前往 <a href="https://soweb.kcg.gov.tw/#/work" target="_blank" rel="noopener">官方查詢頁</a>。
-  <span class="ver">｜版本 v16（低飽和玻璃感）</span>
+  <span class="ver">｜版本 v17</span>
 </footer>
 
 <script>
@@ -553,7 +557,7 @@ function render(rows, useDist, useUnit){
 
     const addrHtml = (addr || hasGeo) ? (
       '<div class="addr-block">' +
-        '<div class="field-k">維修地點</div>' +
+        '<div class="field-k">反應地址</div>' +
         '<div class="field-v">' + esc(addr || (lat + ", " + lng)) + '</div>' +
         '<div class="nav-btns">' +
           '<a href="' + gNav + '" target="_blank" rel="noopener">🧭 Google 導航</a>' +
@@ -575,11 +579,11 @@ function render(rows, useDist, useUnit){
       const lines = [];
       if (numOnly) lines.push("案號：" + numOnly);
       if (date)    lines.push("反應時間：" + date);
-      if (addr)    lines.push("維修地址：" + addr);
+      if (addr)    lines.push("反應地址：" + addr);
       if (content) lines.push("反應內容：" + content);
       const payload = lines.join("\n");
       return payload
-        ? '<button class="copy-all" data-copy="' + esc(payload) + '">📋 一鍵複製案號／時間／地址／內容</button>'
+        ? '<div class="copy-divider"></div><button class="copy-all" data-copy="' + esc(payload) + '">📋 一鍵複製案號／時間／地址／內容</button>'
         : "";
     })();
 
@@ -594,7 +598,6 @@ function render(rows, useDist, useUnit){
         (metaBits ? '<div class="meta-row">' + metaBits + '</div>' : '') +
       '</div>' +
       '<div class="case-detail">' +
-        copyBtn +
         '<div class="field-grid">' +
           field("案件編號", (no ? no.replace(/^.*[-–—](\d+)\s*$/, "#$1") : "")) +
           field("通報事項", category) +
@@ -606,6 +609,7 @@ function render(rows, useDist, useUnit){
         contentHtml +
         addrHtml +
         memoHtml +
+        copyBtn +
       '</div>' +
     '</div>';
   }).join("");
