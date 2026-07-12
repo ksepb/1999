@@ -160,7 +160,8 @@
 
   /* ---------- Case card ---------- */
   .case{border-radius:var(--r-lg);padding:15px 16px;margin-bottom:10px;cursor:pointer}
-  .case:nth-child(even){background:rgba(223,235,231,.66)}
+  .case:nth-child(odd){background:rgba(255,255,255,.74)}
+  .case:nth-child(even){background:rgba(190,213,205,.55)}
   .case-head{display:flex;align-items:center;gap:8px}
   .badge{
     font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 11px;white-space:nowrap;
@@ -237,13 +238,7 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
   }
   .addr-block .field-k{margin-bottom:3px;color:var(--harbor-deep)}
-  .addr-block .field-v{font-weight:600;margin-bottom:2px}
-  .addr-note{
-    display:block;width:100%;text-align:left;font-size:11px;color:var(--ink-faint);
-    margin:0 0 10px;background:none;border:none;padding:0;cursor:pointer;font-family:inherit;
-  }
-  .addr-note{color:var(--harbor-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-  .addr-note.copied{color:var(--ok);text-decoration:none}
+  .addr-block .field-v{font-weight:600;margin-bottom:12px}
   .nav-btns{display:flex;gap:8px}
   .nav-btns a{
     flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;
@@ -252,6 +247,15 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
   }
   .nav-btns a.alt{background:rgba(255,255,255,.55);color:var(--harbor-deep);border:1px solid rgba(255,255,255,.8)}
+  .addr-note{
+    display:flex;align-items:center;gap:5px;width:100%;text-align:left;
+    font-size:11.5px;color:var(--ink-soft);font-weight:600;
+    background:none;border:none;border-top:1px dashed rgba(255,255,255,.65);
+    margin-top:14px;padding:12px 0 0;cursor:pointer;font-family:inherit;
+  }
+  .addr-note::before{content:"🔎";font-size:12px}
+  .addr-note.copied{color:var(--ok)}
+  .addr-note.copied::before{content:"✅"}
 
   /* ---------- Empty / error state ---------- */
   .state{
@@ -324,7 +328,7 @@
 <footer>
   資料來源：高雄市政府「Open1999 派工受理案件」開放資料。
   若需完整介面仍可前往 <a href="https://soweb.kcg.gov.tw/#/work" target="_blank" rel="noopener">官方查詢頁</a>。
-  <span class="ver">｜版本 v22</span>
+  <span class="ver">｜版本 v24</span>
 </footer>
 
 <script>
@@ -567,11 +571,11 @@ function render(rows, useDist, useUnit){
       '<div class="addr-block">' +
         '<div class="field-k">反應地址</div>' +
         '<div class="field-v">' + esc(addr || (lat + ", " + lng)) + '</div>' +
-        (addr ? '<button type="button" class="addr-note" data-caseno="' + esc((String(no||"").match(/(\d+)\s*$/)||[,""])[1]) + '">開放資料可能省略門牌號 · 點此複製案號並開官網核對 →</button>' : '') +
         '<div class="nav-btns">' +
           '<a href="' + gNav + '" target="_blank" rel="noopener">🧭 Google 導航</a>' +
           '<a class="alt" href="' + aNav + '" target="_blank" rel="noopener">🍎 Apple 地圖</a>' +
         '</div>' +
+        (addr ? '<button type="button" class="addr-note" data-caseno="' + esc((String(no||"").match(/(\d+)\s*$/)||[,""])[1]) + '">門牌號可能不完整，點此複製案號到官網核對</button>' : '') +
       '</div>'
     ) : "";
 
@@ -648,7 +652,7 @@ function render(rows, useDist, useUnit){
       if (no) await copyText(no);
       window.open("https://soweb.kcg.gov.tw/#/work", "_blank", "noopener");
       const orig = el.textContent;
-      el.textContent = "✅ 案號已複製，到官網關鍵字欄位貼上查詢";
+      el.textContent = "案號已複製，到官網關鍵字欄位貼上查詢";
       el.classList.add("copied");
       setTimeout(()=>{ el.textContent = orig; el.classList.remove("copied"); }, 2200);
     });
