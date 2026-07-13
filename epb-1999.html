@@ -207,15 +207,15 @@
   }
   .copy-all:active{background:rgba(76,140,130,.14)}
   .copy-all.copied{background:rgba(76,133,98,.16);border-color:rgba(76,133,98,.5);color:var(--ok)}
-  .copy-divider{border-top:1px solid rgba(255,255,255,.6);margin-top:14px}
+  .copy-divider{border-top:1px solid rgba(15,35,38,.14);margin-top:14px}
 
   .field-grid{
     display:grid;grid-template-columns:1fr 1fr;
-    border-top:1px solid rgba(255,255,255,.6);
+    border-top:1px solid rgba(15,35,38,.14);
   }
-  .field{padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.6)}
+  .field{padding:10px 2px;border-bottom:1px solid rgba(15,35,38,.1)}
   .field.full{grid-column:1 / -1}
-  .field-k{font-size:10.5px;color:var(--ink-faint);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  .field-k{font-size:10.5px;color:var(--ink);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
   .field-v{font-size:14px;color:var(--ink);margin-top:3px;overflow-wrap:anywhere;line-height:1.5}
 
   .quote-block{
@@ -227,10 +227,10 @@
   .quote-block .field-k{color:var(--mint-ink);margin-bottom:4px;display:block}
 
   .memo-block{
-    margin:10px 0 4px;padding:12px 14px;background:rgba(255,255,255,.4);
+    margin:10px 0 4px;padding:12px 14px;background:rgba(255,255,255,.75);
     border-radius:var(--r-md);font-size:13.5px;line-height:1.7;color:var(--ink-soft);overflow-wrap:anywhere;
   }
-  .memo-block .field-k{color:var(--ink-faint);margin-bottom:4px;display:block}
+  .memo-block .field-k{color:var(--ink);margin-bottom:4px;display:block}
 
   .addr-block{
     margin:12px 0 4px;padding:13px 14px 13px 16px;border-radius:var(--r-md);
@@ -250,7 +250,7 @@
   .addr-note{
     display:flex;align-items:center;gap:5px;width:100%;text-align:left;
     font-size:11.5px;color:var(--ink-soft);font-weight:600;
-    background:none;border:none;border-top:1px dashed rgba(255,255,255,.65);
+    background:none;border:none;border-top:1px dashed rgba(15,35,38,.18);
     margin-top:14px;padding:12px 0 0;cursor:pointer;font-family:inherit;
   }
   .addr-note::before{content:"🔎";font-size:12px}
@@ -328,7 +328,7 @@
 <footer>
   資料來源：高雄市政府「Open1999 派工受理案件」開放資料。
   若需完整介面仍可前往 <a href="https://soweb.kcg.gov.tw/#/work" target="_blank" rel="noopener">官方查詢頁</a>。
-  <span class="ver">｜版本 v24</span>
+  <span class="ver">｜版本 v25</span>
 </footer>
 
 <script>
@@ -383,9 +383,18 @@ function esc(s){
 }
 function fmtDate(v){
   if (!v) return "";
+  const p2 = n => String(n).padStart(2,"0");
+  let d = null;
   const m = String(v).match(/\/Date\((\d+)\)\//);
-  if (m) return new Date(Number(m[1])).toLocaleString("zh-TW",{hour12:false});
-  return String(v);
+  if (m){
+    d = new Date(Number(m[1]));
+  } else {
+    const parsed = new Date(String(v).replace(/-/g,"/"));
+    if (!isNaN(parsed.getTime())) d = parsed;
+  }
+  if (!d) return String(v);
+  return d.getFullYear() + "/" + p2(d.getMonth()+1) + "/" + p2(d.getDate()) +
+    " " + p2(d.getHours()) + ":" + p2(d.getMinutes()) + ":" + p2(d.getSeconds());
 }
 function normKey(k){ return String(k).toLowerCase().replace(/[^a-z0-9]/g,""); }
 function pick(row, keys){
@@ -614,8 +623,8 @@ function render(rows, useDist, useUnit){
         '<div class="field-grid">' +
           field("案件編號", (no ? no.replace(/^.*[-–—](\d+)\s*$/, "#$1") : "")) +
           field("通報事項", category) +
-          field("通報日期", date) +
-          field("結案日期", closeDate) +
+          field("通報日期", date, true) +
+          field("結案日期", closeDate, true) +
         '</div>' +
         contentHtml +
         addrHtml +
