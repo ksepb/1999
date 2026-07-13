@@ -124,6 +124,7 @@
     padding:13px 0;font-size:16px;font-weight:700;
     cursor:pointer;box-shadow:0 8px 20px -6px rgba(30,58,66,.4),inset 0 1px 0 rgba(255,255,255,.35);
   }
+  .btn-search .search-spacer{width:20px;flex-shrink:0}
   .btn-search::after{
     content:"";position:absolute;inset:0;
     background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 55%);
@@ -309,7 +310,7 @@
       <button class="quick" id="q7">近 7 天</button>
       <button class="quick" id="q30">近 30 天</button>
     </div>
-    <button class="btn-search" id="btnQuery">🔍　查　詢</button>
+    <button class="btn-search" id="btnQuery"><span class="search-icon">🔍</span><span>查　詢</span><span class="search-spacer" aria-hidden="true"></span></button>
     <div class="hint" id="hint">預設查詢當天；日期區間最長一年（資料來源限制）。</div>
   </div>
 </div>
@@ -328,7 +329,7 @@
 <footer>
   資料來源：高雄市政府「Open1999 派工受理案件」開放資料。
   若需完整介面仍可前往 <a href="https://soweb.kcg.gov.tw/#/work" target="_blank" rel="noopener">官方查詢頁</a>。
-  <span class="ver">｜版本 v25</span>
+  <span class="ver">｜版本 v26</span>
 </footer>
 
 <script>
@@ -551,7 +552,7 @@ function render(rows, useDist, useUnit){
     const cls = badgeClass(status);
     const no   = pick(r,["FileNo","Seq","CaseNo"]);
     const category = pick(r,["InformDesc"]);
-    const content  = pick(r,["BeforeDesc"]);
+    const content  = pick(r,["BeforeDesc"]).replace(/^\s*渠\s*/, "");
     const memo = pick(r,["Memo"]);
     const desc = content || category;
     const addr = pick(r,["address","Address"]);
